@@ -1,7 +1,11 @@
 <Solution>
+  <Folder Name="/Mappy/">
+    <Project Path="Mappy/Mappy.Api/Mappy.Api.csproj" />
+    <Project Path="Mappy/Mappy.Application/Mappy.Application.csproj" />
+    <Project Path="Mappy/Mappy.Domain/Mappy.Domain.csproj" />
+    <Project Path="Mappy/Mappy.Infrastructure/Mappy.Infrastructure.csproj" />
+  </Folder>
   <Project Path="Contracts/Contracts.csproj" />
   <Project Path="DestinationSearch.API/DestinationSearch.API.csproj" />
-  <Project Path="Domain/Domain.csproj" />
-  <Project Path="Mappy.Api/Mappy.Api.csproj" />
   <Project Path="SharedKernel/SharedKernel.csproj" />
 </Solution>

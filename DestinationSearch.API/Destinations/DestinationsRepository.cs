@@ -1,6 +1,4 @@
-﻿using Domain.Destinations;
-
-namespace DestinationSearch.API.Destinations;
+﻿namespace DestinationSearch.API.Destinations;
 
 public class DestinationsRepository
 {

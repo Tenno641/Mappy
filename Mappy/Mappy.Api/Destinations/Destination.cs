@@ -1,4 +1,4 @@
-﻿namespace Domain.Destinations;
+﻿namespace Mappy.Api.Destinations;
 
 public class Destination
 {

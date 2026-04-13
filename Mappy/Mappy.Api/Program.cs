@@ -1,5 +1,4 @@
 using Mappy.Api.Destinations;
-using Microsoft.AspNetCore.Mvc;
 using SharedKernel.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +8,7 @@ builder.Services.AddScoped<DestinationsReceivingService>();
 
 var app = builder.Build();
 
-app.MapGet("api/destinations", async (string? input, [FromServices] DestinationsReceivingService service, HttpContext context) =>
+app.MapGet("api/destinations", async (string? input, DestinationsReceivingService service) =>
 {
     return Results.Ok(await service.Search(input));
 });
