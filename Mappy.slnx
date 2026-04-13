@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Contracts/Contracts.csproj" />
+  <Project Path="DestinationSearch.API/DestinationSearch.API.csproj" />
+  <Project Path="Domain/Domain.csproj" />
+  <Project Path="Mappy.Api/Mappy.Api.csproj" />
+  <Project Path="SharedKernel/SharedKernel.csproj" />
+</Solution>
