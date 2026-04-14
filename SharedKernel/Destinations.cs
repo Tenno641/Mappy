@@ -1,4 +1,4 @@
-﻿namespace Contracts;
+﻿namespace SharedKernel;
 
 public record GetDestinationsRequest(string? Input);
 

@@ -18,5 +18,5 @@ public class Destination
         ImageName = imageName;
     }
 
-    public bool DoesMatch(string? input) => string.IsNullOrEmpty(input) || Name.Contains(input) || (Description?.Contains(input) ?? false);
+    public bool DoesMatch(string? input) => string.IsNullOrEmpty(input) || Name.Contains(input, StringComparison.InvariantCultureIgnoreCase) || (Description is not null && Description.Contains(input, StringComparison.InvariantCultureIgnoreCase));
 }

@@ -1,11 +1,12 @@
-﻿namespace Mappy.Api.Destinations;
+﻿namespace Mappy.Domain.Destinations;
 
+// Not used - Destination Response return from the message queue is.
 public class Destination
 {
-    public string Name { get; private set; }
-    public string? Description { get; private set; }
-    public string? ImageRootUri { get; private set; }
-    public string? ImageName { get; private set; }
+    private string Name { get; }
+    private string? Description { get; }
+    private string? ImageRootUri { get; }
+    private string? ImageName { get; }
     public Uri? ImageUri => ImageRootUri is null || ImageName is null
         ? null
         : new Uri(ImageRootUri + ImageName);

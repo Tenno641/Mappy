@@ -1,26 +1,27 @@
 ﻿using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json;
-using Contracts;
+using Mappy.Application.Common.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SharedKernel;
 using SharedKernel.RabbitMQ;
 
-namespace Mappy.Api.Destinations;
+namespace Mappy.Infrastructure.Services;
 
-public class DestinationsReceivingService
+public class DestinationsService: IDestinationsService
 {
-    private readonly RabbitMQService _rabbitMQ;
+    private readonly RabbitMQService _rabbitMq;
     private readonly ConcurrentDictionary<string, TaskCompletionSource<DestinationsResponse>> _destinations = [];
     
-    public DestinationsReceivingService(RabbitMQService rabbitMq)
+    public DestinationsService(RabbitMQService rabbitMq)
     {
-        _rabbitMQ = rabbitMq;
+        _rabbitMq = rabbitMq;
     }
     
-    public async Task<DestinationsResponse> Search(string? input = null, CancellationToken cancellationToken = default)
+    public async Task<DestinationsResponse> SearchAsync(string? input = null, CancellationToken cancellationToken = default)
     {
-        await using var channel = await _rabbitMQ.CreateChannelAsync();
+        await using var channel = await _rabbitMq.CreateChannelAsync();
         var consumer = new AsyncEventingBasicConsumer(channel);
         var replyQueueName = (await channel.QueueDeclareAsync(cancellationToken: cancellationToken)).QueueName; 
         
