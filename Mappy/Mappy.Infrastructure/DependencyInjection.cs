@@ -19,7 +19,8 @@ public static class DependencyInjection
         
         services.AddDbContext<MappyDbContext>(options =>
         {
-            options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
+            // options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
+            options.UseNpgsql("Server=localhost; Database=Mappy; Password=password; Username=postgres; Port=5432;");
         });
 
         return services;

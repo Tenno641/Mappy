@@ -2,7 +2,8 @@
 using Mappy.Application.Stops;
 using MediatR;
 using ErrorOr;
-using Mappy.Domain.Itineraries;
+using Mappy.Api.Common.Validation;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Mappy.Api.Features.Stops;
 
@@ -12,7 +13,7 @@ public class CreateStop: ISlice
     {
         endpoints.MapPost("api/itineraries/{itineraryId:guid}/stops", async (Guid itineraryId,
             CreateStopRequest request,
-            ISender sender,
+            [FromServices] ISender sender,
             CancellationToken cancellationToken) =>
         {
             CreateStopCommand command = new CreateStopCommand(request.Name, request.ImageUri, itineraryId);
@@ -20,10 +21,11 @@ public class CreateStop: ISlice
             ErrorOr<Guid> result = await sender.Send(command, cancellationToken);
             
             return result.IsError 
-                ? Results.BadRequest(result.Errors)
+                ? result.Errors.ToValidationProblem()
                 : Results.CreatedAtRoute("GetStop", new { itineraryId = itineraryId, StopId = result.Value }, result.Value);
+            
         });
     }
 
-    private abstract record CreateStopRequest(string Name, string? ImageUri);
+    private record CreateStopRequest(string Name, string? ImageUri);
 }

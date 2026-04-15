@@ -1,7 +1,6 @@
 ﻿using Mappy.Domain.Common;
 using Mappy.Infrastructure.Persistence;
 using MediatR;
-using MediatR.NotificationPublishers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
@@ -24,28 +23,15 @@ public class EventualConsistencyMiddleware
         IPublisher publisher)
     {
         await using IDbContextTransaction transaction = await dbContext.Database.BeginTransactionAsync();
-        httpContext.Response.OnCompleted(async () =>
-        {
-            try
-            {
-                if (httpContext.Items.TryGetValue(MappyDbContext.DomainEventsKey, out var domainEvents)
-                    && domainEvents is Queue<IDomainEvent> existingDomainEvents)
-                {
-                    foreach (IDomainEvent @event in existingDomainEvents)
-                        await publisher.Publish(@event);
-                }
-                await transaction.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Message: {Message}", ex.Message);
-            }
-            finally
-            {
-                await transaction.RollbackAsync();
-            }
-        });
         
         await _next(httpContext);
+        
+        if (httpContext.Items.TryGetValue(MappyDbContext.DomainEventsKey, out var domainEvents)
+            && domainEvents is Queue<IDomainEvent> existingDomainEvents)
+        {
+            while (existingDomainEvents.TryDequeue(out IDomainEvent? domainEvent))
+                await publisher.Publish(domainEvent);
+        }
+        await transaction.CommitAsync();
     }
 }

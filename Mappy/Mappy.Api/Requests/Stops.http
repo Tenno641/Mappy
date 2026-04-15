@@ -1,0 +1,8 @@
+﻿@itineraryId = 979f1a54-f402-4411-aefe-ea2fa4bac120
+
+POST http://localhost:5000/api/itineraries/{{itineraryId}}/stops
+Content-Type: application/json
+
+{
+  "Name": "okdegi0wrjhgoi[wrehgioperjhgoierwjgihetrpgeroigtroihgjpeoigjoeg;ojgorfjgsrjhgoejgoierjgyiejrgoijeroigjeofigjeogjrohgujeklhgpoierjgporejig[erw[igeri0gujer[otgrpoihgjp[oerjg[oerjhgtoierg;oijfgh;jfghpoieroitghd;righds;oihgseoirghjergjiepfjgboidfghjoierg"
+}

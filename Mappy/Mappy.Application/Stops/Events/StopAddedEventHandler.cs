@@ -1,5 +1,5 @@
 ﻿using Mappy.Application.Common.Interfaces;
-using Mappy.Domain.Itineraries;
+using Mappy.Domain.Itineraries.Events;
 using MediatR;
 
 namespace Mappy.Application.Stops.Events;

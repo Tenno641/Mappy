@@ -50,15 +50,15 @@ public class MappyDbContext: DbContext
             }
         }
 
-        var domainEvents = ChangeTracker.Entries<Entity>().SelectMany(e => e.Entity.PopDomainEvents()).ToList();
-
-        if (IsRequestBeingProcessed)
-        {
-            SetDomainEventsToBeProcessed(domainEvents);
-            return await base.SaveChangesAsync(cancellationToken);
-        }
-        
-        await PublishDomainEvents(domainEvents);
+        // var domainEvents = ChangeTracker.Entries<Entity>().SelectMany(e => e.Entity.PopDomainEvents()).ToList();
+        //
+        // if (IsRequestBeingProcessed)
+        // {
+        //     SetDomainEventsToBeProcessed(domainEvents);
+        //     return await base.SaveChangesAsync(cancellationToken);
+        // }
+        //
+        // await PublishDomainEvents(domainEvents);
         return await base.SaveChangesAsync(cancellationToken);
     }
 

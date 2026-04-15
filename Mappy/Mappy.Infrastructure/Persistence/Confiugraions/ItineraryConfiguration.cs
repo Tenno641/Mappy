@@ -14,9 +14,8 @@ public class ItineraryConfiguration: IEntityTypeConfiguration<Itinerary>
             .HasColumnType("uuid")
             .ValueGeneratedNever();
 
-        builder.Property("_userId")
+        builder.Property(i => i.UserId)
             .HasColumnType("uuid")
-            .HasColumnName("Userid")
             .ValueGeneratedNever();
         
         builder.Property("_stopsIds")

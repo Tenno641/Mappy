@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Mappy.Domain.Common;
+using Mappy.Domain.Itineraries.Events;
 using Mappy.Domain.Stops;
 
 namespace Mappy.Domain.Itineraries;
@@ -7,8 +8,8 @@ namespace Mappy.Domain.Itineraries;
 public class Itinerary: AuditableEntity
 {
     private readonly List<Guid> _stopsIds = [];
-    private Guid _userId;
    
+    public Guid UserId { get; }
     public string Name { get; }
     public string? Description { get; }
 
@@ -16,7 +17,7 @@ public class Itinerary: AuditableEntity
     {
         Name = name;
         Description = description;
-        _userId = userId;
+        UserId = userId;
     }
 
     public ErrorOr<Success> AddStop(Stop stop)

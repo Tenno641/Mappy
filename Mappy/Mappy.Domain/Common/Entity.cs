@@ -4,7 +4,7 @@ public class Entity
 {
     public Guid Id { get; }
 
-    public List<IDomainEvent> DomainEvents = [];
+    protected List<IDomainEvent> DomainEvents = [];
 
     protected Entity(Guid? id = null)
     {
