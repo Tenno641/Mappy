@@ -17,10 +17,21 @@ public class ItinerariesRepository: IItinerariesRepository
     {
         return await _dbContext.Itineraries
             .Where(i =>
-                search == null ||
-                i.Name.ToLower().Contains(search.ToLower())
+                search == null 
+                || i.Name.ToLower().Contains(search.ToLower())
                 || (i.Description != null && i.Description.ToLower().Contains(search.ToLower())))
-            // TODO: is not null doesn't work here WHY TF 
             .ToListAsync();
+    }
+    
+    public async Task<Itinerary?> GetByIdAsync(Guid itineraryId)
+    {
+        return await _dbContext.Itineraries.FirstOrDefaultAsync(i => i.Id == itineraryId);
+    }
+    
+    public async Task UpdateAsync(Itinerary itinerary)
+    {
+        _dbContext.Itineraries.Update(itinerary);
+        
+        await _dbContext.SaveChangesAsync();
     }
 }

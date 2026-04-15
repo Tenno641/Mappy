@@ -11,9 +11,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
+        
         services.AddScoped<IDestinationsService, DestinationsService>();
         services.AddScoped<IStopsRepository, StopsRepository>();
         services.AddScoped<IItinerariesRepository, ItinerariesRepository>();
+        
         services.AddDbContext<MappyDbContext>(options =>
         {
             options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));

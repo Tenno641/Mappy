@@ -14,5 +14,6 @@ builder.Services
 var app = builder.Build();
 
 app.MapSlicesEndpoints();
+app.AddEventualConsistency();
 
 app.Run();

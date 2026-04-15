@@ -2,6 +2,8 @@
 using Mappy.Domain.Common;
 using Mappy.Domain.Itineraries;
 using Mappy.Domain.Stops;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -9,8 +11,15 @@ namespace Mappy.Infrastructure.Persistence;
 
 public class MappyDbContext: DbContext
 {
-    public MappyDbContext(DbContextOptions<MappyDbContext> options) : base(options)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IPublisher _publisher;
+        
+    public const string DomainEventsKey = "DomainEvents";
+    
+    public MappyDbContext(DbContextOptions<MappyDbContext> options, IHttpContextAccessor contextAccessor, IPublisher publisher) : base(options)
     {
+        _httpContextAccessor = contextAccessor;
+        _publisher = publisher;
     }
     
     public DbSet<Itinerary> Itineraries { get; set; }
@@ -21,7 +30,7 @@ public class MappyDbContext: DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         var entries = ChangeTracker.Entries<AuditableEntity>();
 
@@ -40,6 +49,35 @@ public class MappyDbContext: DbContext
                 entry.Entity.ModifiedOn = DateTime.UtcNow;
             }
         }
-        return base.SaveChangesAsync(cancellationToken);
+
+        var domainEvents = ChangeTracker.Entries<Entity>().SelectMany(e => e.Entity.PopDomainEvents()).ToList();
+
+        if (IsRequestBeingProcessed)
+        {
+            SetDomainEventsToBeProcessed(domainEvents);
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        
+        await PublishDomainEvents(domainEvents);
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private bool IsRequestBeingProcessed => _httpContextAccessor.HttpContext is not null;
+
+    private void SetDomainEventsToBeProcessed(List<IDomainEvent> events)
+    {
+        if (_httpContextAccessor.HttpContext.Items.TryGetValue(DomainEventsKey, out var domainEvents) 
+            && domainEvents is Queue<IDomainEvent> existingDomainEvents)
+        {
+            events.ForEach(existingDomainEvents.Enqueue);
+        }
+        
+        _httpContextAccessor.HttpContext.Items["DomainEvents"] = new Queue<IDomainEvent>(events);
+    }
+
+    private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
+    {
+        foreach (IDomainEvent domainEvent in domainEvents)
+            await _publisher.Publish(domainEvent);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Mappy.Domain.Common;
+﻿using ErrorOr;
+using Mappy.Domain.Common;
+using Mappy.Domain.Stops;
 
 namespace Mappy.Domain.Itineraries;
 
@@ -16,6 +18,23 @@ public class Itinerary: AuditableEntity
         Description = description;
         _userId = userId;
     }
+
+    public ErrorOr<Success> AddStop(Stop stop)
+    {
+        if (_stopsIds.Contains(stop.Id))
+            return ItineraryErrors.StopAlreadyExist;
+        
+        DomainEvents.Add(new StopAddedEvent(stop));
+        
+        _stopsIds.Add(stop.Id);
+
+        return Result.Success;
+    }
     
     private Itinerary() { }
+}
+
+public static class ItineraryErrors
+{
+    public static Error StopAlreadyExist => Error.Conflict(code: "Itinerary.AddStop", description: "Stop already exists");
 }

@@ -10,7 +10,7 @@ public class GetStops: ISlice
 {
     public void AddEndPoint(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("api/itineraries/{itineraryId}/stops", async (Guid itineraryId,
+        endpoints.MapGet("api/itineraries/{itineraryId:guid}/stops", async (Guid itineraryId,
             [FromServices] ISender sender,
             CancellationToken cancellationToken) =>
         {
