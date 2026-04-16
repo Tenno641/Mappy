@@ -16,6 +16,7 @@ public class ItinerariesRepository: IItinerariesRepository
     public async Task<List<Itinerary>> ListItinerariesAsync(string? search)
     {
         return await _dbContext.Itineraries
+            .AsNoTracking()
             .Where(i =>
                 search == null 
                 || i.Name.ToLower().Contains(search.ToLower())
@@ -25,7 +26,9 @@ public class ItinerariesRepository: IItinerariesRepository
     
     public async Task<Itinerary?> GetByIdAsync(Guid itineraryId)
     {
-        return await _dbContext.Itineraries.FirstOrDefaultAsync(i => i.Id == itineraryId);
+        return await _dbContext.Itineraries
+            .AsNoTracking()
+            .FirstOrDefaultAsync(i => i.Id == itineraryId);
     }
     
     public async Task UpdateAsync(Itinerary itinerary)

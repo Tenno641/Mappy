@@ -4,5 +4,6 @@ POST http://localhost:5000/api/itineraries/{{itineraryId}}/stops
 Content-Type: application/json
 
 {
-  "Name": "okdegi0wrjhgoi[wrehgioperjhgoierwjgihetrpgeroigtroihgjpeoigjoeg;ojgorfjgsrjhgoejgoierjgyiejrgoijeroigjeofigjeogjrohgujeklhgpoierjgporejig[erw[igeri0gujer[otgrpoihgjp[oerjg[oerjhgtoierg;oijfgh;jfghpoieroitghd;righds;oihgseoirghjergjiepfjgboidfghjoierg"
+  "Name": "okdegi0wrjhgoi[wrehgioperjhgoierwjgihetrpgeroigtroihgjpeoigjoeg;ojgorfjgsrjhgoejgoierjgyiejrgoijeroigjeofigjeogjrohgujeklhgpoierjgporejig[erw[igeri0gujer[otgrpoihgjp[oerjg[oerjhgtoierg;oijfgh;jfghpoieroitghd;righds;oihgseoirghjergjiepfjgboidfghjoierg",
+  "ImageUri": "Invalid-Uri"
 }

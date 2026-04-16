@@ -15,7 +15,9 @@ public class StopsRepository: IStopsRepository
 
     public async Task<List<Stop>> GetStopsByItineraryId(Guid itineraryId)
     {
-        return await _dbContext.Stops.Where(s => s.ItineraryId == itineraryId).ToListAsync();
+        return await _dbContext.Stops
+            .AsNoTracking()
+            .Where(s => s.ItineraryId == itineraryId).ToListAsync();
     }
     
     public async Task CreateStopAsync(Stop stop)
@@ -27,6 +29,8 @@ public class StopsRepository: IStopsRepository
     
     public async Task<Stop?> GetStopAsync(Guid stopId)
     {
-        return await _dbContext.Stops.FirstOrDefaultAsync(s => s.Id == stopId);
+        return await _dbContext.Stops
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == stopId);
     }
 }
