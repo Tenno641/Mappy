@@ -23,6 +23,8 @@ public static class DependencyInjection
             options.UseNpgsql("Server=localhost; Database=Mappy; Password=password; Username=postgres; Port=5432;");
         });
 
+        // services.AddHostedService<MessagesDispatcherBackgroundService>();
+
         return services;
     }
 }

@@ -12,12 +12,10 @@ public record CreateStopCommand(string Name, string? ImageUri, Guid ItineraryId)
 public class CreateStop: IRequestHandler<CreateStopCommand, ErrorOr<Guid>>
 {
     private readonly IItinerariesRepository _itinerariesRepository;
-    private readonly IStopsRepository _stopsRepository;
     
-    public CreateStop(IItinerariesRepository itinerariesRepository, IStopsRepository stopsRepository)
+    public CreateStop(IItinerariesRepository itinerariesRepository)
     {
         _itinerariesRepository = itinerariesRepository;
-        _stopsRepository = stopsRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(CreateStopCommand request, CancellationToken cancellationToken)
@@ -38,8 +36,6 @@ public class CreateStop: IRequestHandler<CreateStopCommand, ErrorOr<Guid>>
         
         await _itinerariesRepository.UpdateAsync(itinerary);
         
-        await _stopsRepository.CreateStopAsync(stop);
-
         return stop.Id;
     }
 }

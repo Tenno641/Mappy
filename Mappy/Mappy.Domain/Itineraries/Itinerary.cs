@@ -25,7 +25,7 @@ public class Itinerary: AuditableEntity
         if (_stopsIds.Contains(stop.Id))
             return ItineraryErrors.StopAlreadyExist;
         
-        DomainEvents.Add(new StopAddedEvent(stop));
+        DomainEvents.Add(new StopAddedEvent(Id, stop));
         
         _stopsIds.Add(stop.Id);
 

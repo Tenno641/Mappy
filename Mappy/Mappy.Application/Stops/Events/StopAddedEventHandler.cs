@@ -15,6 +15,8 @@ public class StopAddedEventHandler: INotificationHandler<StopAddedEvent>
 
     public async Task Handle(StopAddedEvent notification, CancellationToken cancellationToken)
     {
+        notification.Stop.SetItineraryId(notification.ItineraryId);
+        
         await _stopsRepository.CreateStopAsync(notification.Stop);
     }
 }

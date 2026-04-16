@@ -2,6 +2,7 @@
 using Mappy.Domain.Common;
 using Mappy.Domain.Itineraries;
 using Mappy.Domain.Stops;
+using Mappy.Infrastructure.Outbox;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ public class MappyDbContext: DbContext
     
     public DbSet<Itinerary> Itineraries { get; set; }
     public DbSet<Stop> Stops { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,9 +51,12 @@ public class MappyDbContext: DbContext
                 entry.Entity.ModifiedOn = DateTime.UtcNow;
             }
         }
+        
+        var domainEvents = ChangeTracker.Entries<Entity>().SelectMany(e => e.Entity.PopDomainEvents()).ToList();
 
-        // var domainEvents = ChangeTracker.Entries<Entity>().SelectMany(e => e.Entity.PopDomainEvents()).ToList();
-        //
+        foreach (IDomainEvent domainEvent in domainEvents)
+            await _publisher.Publish(domainEvent, cancellationToken);
+
         // if (IsRequestBeingProcessed)
         // {
         //     SetDomainEventsToBeProcessed(domainEvents);
@@ -59,6 +64,7 @@ public class MappyDbContext: DbContext
         // }
         //
         // await PublishDomainEvents(domainEvents);
+        
         return await base.SaveChangesAsync(cancellationToken);
     }
 
