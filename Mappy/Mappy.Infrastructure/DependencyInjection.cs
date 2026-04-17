@@ -25,6 +25,8 @@ public static class DependencyInjection
         });
 
         services.AddHostedService<MessagesDispatcherBackgroundService>();
+        
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         return services;
     }

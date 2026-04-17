@@ -1,15 +1,22 @@
 using Mappy.Api.Common;
 using Mappy.Application;
 using Mappy.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SharedKernel.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
 await builder.Services.AddRabbitMqAsync();
+
 builder.Services
     .AddInfrastructure()
     .AddApplication()
     .RegisterSlices();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer();
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

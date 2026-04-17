@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text.Json;
+using Mappy.Application.Common.Interfaces;
 using Mappy.Domain.Common;
 using Mappy.Domain.Itineraries;
 using Mappy.Domain.Stops;
@@ -15,13 +16,19 @@ public class MappyDbContext: DbContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IPublisher _publisher;
+    private readonly ICurrentUserService _currentUserService;
         
     public const string DomainEventsKey = "DomainEvents";
     
-    public MappyDbContext(DbContextOptions<MappyDbContext> options, IHttpContextAccessor contextAccessor, IPublisher publisher) : base(options)
+    public MappyDbContext(
+        DbContextOptions<MappyDbContext> options, 
+        IHttpContextAccessor contextAccessor, 
+        IPublisher publisher,
+        ICurrentUserService currentUserService) : base(options)
     {
         _httpContextAccessor = contextAccessor;
         _publisher = publisher;
+        _currentUserService = currentUserService;
     }
     
     public DbSet<Itinerary> Itineraries { get; set; }
@@ -41,14 +48,14 @@ public class MappyDbContext: DbContext
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedBy = ""; // TODO: User Service
+                entry.Entity.CreatedBy = _currentUserService.UserId;
                 entry.Entity.CreatedOn = DateTime.UtcNow;
-                entry.Entity.ModifiedBy = ""; // TODO: UserService
+                entry.Entity.ModifiedBy = _currentUserService.UserId;
                 entry.Entity.ModifiedOn = DateTime.UtcNow;
             }
             else if (entry.State == EntityState.Modified)
             {
-                entry.Entity.ModifiedBy = ""; // TODO: UserService
+                entry.Entity.ModifiedBy = _currentUserService.UserId;
                 entry.Entity.ModifiedOn = DateTime.UtcNow;
             }
         }
