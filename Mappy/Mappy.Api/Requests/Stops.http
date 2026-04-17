@@ -1,6 +1,6 @@
 ﻿@itineraryId = 979f1a54-f402-4411-aefe-ea2fa4bac120
 
-POST http://localhost:5021/api/itineraries/{{itineraryId}}/stops
+POST http://localhost:5000/api/itineraries/{{itineraryId}}/stops
 Content-Type: application/json
 
 {

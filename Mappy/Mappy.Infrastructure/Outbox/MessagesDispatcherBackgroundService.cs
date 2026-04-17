@@ -20,7 +20,6 @@ public class MessagesDispatcherBackgroundService: BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            Console.WriteLine("Running Shit");
             using var scope = _serviceScopeFactory.CreateScope();
 
             MappyDbContext dbContext = scope.ServiceProvider.GetRequiredService<MappyDbContext>();
