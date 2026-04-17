@@ -1,4 +1,5 @@
 ﻿using Mappy.Application.Common.Interfaces;
+using Mappy.Infrastructure.Outbox;
 using Mappy.Infrastructure.Persistence;
 using Mappy.Infrastructure.Persistence.Repositories;
 using Mappy.Infrastructure.Services;
@@ -23,7 +24,7 @@ public static class DependencyInjection
             options.UseNpgsql("Server=localhost; Database=Mappy; Password=password; Username=postgres; Port=5432;");
         });
 
-        // services.AddHostedService<MessagesDispatcherBackgroundService>();
+        services.AddHostedService<MessagesDispatcherBackgroundService>();
 
         return services;
     }

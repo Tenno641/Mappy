@@ -1,7 +1,4 @@
 ﻿using System.Text.Json;
-using Mappy.Domain.Common;
-using Mappy.Domain.Itineraries.Events;
-using Mappy.Domain.Stops;
 using Mappy.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -47,19 +44,19 @@ public class MessagesDispatcherBackgroundService: BackgroundService
                         Type type = Type.GetType(outBoxMessage.Type)!;
 
                         var domainEvent = JsonSerializer.Deserialize(outBoxMessage.Body, type);
-
-                        Console.WriteLine($"Domain Event Before Casting {domainEvent}");
                         
-                        Console.WriteLine($"Domain Event After Casting {(IDomainEvent?) domainEvent}");
+                        if (domainEvent is null)
+                            continue;
 
                         outBoxMessage.IsProcessed = true;
 
-                        await publisher.Publish((IDomainEvent?) domainEvent, stoppingToken);
+                        await publisher.Publish(domainEvent, stoppingToken);
                     }
+                    // TODO: Saving Changes here causes connection hanging... !!
                 }
                 catch (DbUpdateConcurrencyException concurrencyException)
                 {
-
+                    Console.WriteLine(concurrencyException);
                 }
                 catch (Exception ex)
                 {
@@ -69,7 +66,7 @@ public class MessagesDispatcherBackgroundService: BackgroundService
                 await dbContext.SaveChangesAsync(stoppingToken);
             }
             
-            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
         }
     }
 }

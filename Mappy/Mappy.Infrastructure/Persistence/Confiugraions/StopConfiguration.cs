@@ -12,16 +12,10 @@ public class StopConfiguration: IEntityTypeConfiguration<Stop>
         builder.Property(s => s.Id)
             .HasColumnType("uuid")
             .ValueGeneratedOnAdd();
+
+        builder.Property(s => s.Name);
+        builder.Property(s => s.ImageUri);
         
-        builder.Property("_name")
-            .HasColumnName("Name")
-            .HasMaxLength(128)
-            .IsRequired();
-
-        builder.Property<Uri>("_imageUri")
-            .HasColumnName("ImageUri")
-            .HasConversion(v => v.ToString(), v => new Uri(v));
-
         builder.Property(s => s.ItineraryId)
             .HasColumnType("uuid")
             .ValueGeneratedNever();

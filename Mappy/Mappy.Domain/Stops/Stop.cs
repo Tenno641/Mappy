@@ -1,19 +1,20 @@
-﻿using ErrorOr;
+﻿using System.Text.Json.Serialization;
+using ErrorOr;
 using Mappy.Domain.Common;
 
 namespace Mappy.Domain.Stops;
 
 public class Stop: AuditableEntity 
 {
-    private string _name;
-    private Uri? _imageUri;
+    public string Name { get; private set; }
+    public Uri? ImageUri { get; private set; }
 
     public Guid? ItineraryId { get; private set; }
     
     public Stop(string name, Uri? imageUri, Guid? id = null): base(id)
     {
-        _name = name;
-        _imageUri = imageUri;
+        Name = name;
+        ImageUri = imageUri;
     }
 
     public ErrorOr<Success> SetItineraryId(Guid itineraryId)
@@ -24,6 +25,14 @@ public class Stop: AuditableEntity
         ItineraryId = itineraryId;
 
         return Result.Success;
+    }
+    
+    [JsonConstructor]
+    public Stop(Guid id, string name, Uri? imageUri, Guid? itineraryId): base(id)
+    {
+        Name = name;
+        ImageUri = imageUri;
+        ItineraryId = itineraryId;
     }
     
     private Stop() { }

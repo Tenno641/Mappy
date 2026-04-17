@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text.Json;
 using Mappy.Domain.Common;
 using Mappy.Domain.Itineraries;
 using Mappy.Domain.Stops;
@@ -54,8 +55,12 @@ public class MappyDbContext: DbContext
         
         var domainEvents = ChangeTracker.Entries<Entity>().SelectMany(e => e.Entity.PopDomainEvents()).ToList();
 
-        foreach (IDomainEvent domainEvent in domainEvents)
-            await _publisher.Publish(domainEvent, cancellationToken);
+        var outBoxMessages = domainEvents.Select(e => 
+            new OutboxMessage(e.GetType().AssemblyQualifiedName, JsonSerializer.Serialize(e, e.GetType())));
+        
+        OutboxMessages.AddRange(outBoxMessages);
+
+        // await PublishDomainEventsAsync(domainEvents);
 
         // if (IsRequestBeingProcessed)
         // {
@@ -81,7 +86,7 @@ public class MappyDbContext: DbContext
         _httpContextAccessor.HttpContext.Items["DomainEvents"] = new Queue<IDomainEvent>(events);
     }
 
-    private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
+    private async Task PublishDomainEventsAsync(List<IDomainEvent> domainEvents)
     {
         foreach (IDomainEvent domainEvent in domainEvents)
             await _publisher.Publish(domainEvent);
