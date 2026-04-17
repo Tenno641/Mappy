@@ -20,6 +20,18 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler();
+}
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapSlicesEndpoints();
 app.AddEventualConsistency();
 
