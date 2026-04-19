@@ -37,4 +37,11 @@ public class ItinerariesRepository: IItinerariesRepository
         
         await _dbContext.SaveChangesAsync();
     }
+    
+    public async Task AddAsync(Itinerary itinerary)
+    {
+        _dbContext.Itineraries.Add(itinerary);
+        
+        await _dbContext.SaveChangesAsync();
+    }
 }

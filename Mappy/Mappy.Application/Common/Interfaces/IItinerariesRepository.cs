@@ -8,4 +8,5 @@ public interface IItinerariesRepository
     Task<List<Itinerary>> ListItinerariesAsync(string? search);
     Task<Itinerary?> GetByIdAsync(Guid itineraryId);
     Task UpdateAsync(Itinerary itinerary);
+    Task AddAsync(Itinerary itinerary);
 }
